@@ -5,27 +5,37 @@ import { User } from './models/user.model.js';
 
 
 dotenv.config({
-    path:'./.env'
+  path: './.env',
 });
 
+const startServer = async () => {
+  try {
+    await connectDB();
 
-const startServer=async()=>{
-  
-    try {
-          await connectDB();
-    app.on('error',(error)=>{
-        console.log("ERROR",error);
-        throw error;
+    const port = process.env.PORT || 3000;
+    app.listen(port, () => {
+      console.log(`Server running on http://localhost:${port}`);
     });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+};
 
-    app.listen(process.env.PORT || 3000,()=>{
-        console.log(`Port is sucessfully running ${process.env.PORT}`)
-    })
-  
-    } catch (error) {
-        console.log("Error connecting error")
-    }
-}
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  if (process.env.NODE_ENV === 'production') {
+    process.exit(1);
+  }
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  if (process.env.NODE_ENV === 'production') {
+    process.exit(1);
+  }
+});
+
 startServer();
 
 // const testUser=async()=>{
@@ -42,5 +52,3 @@ startServer();
 //     }
 // };
 // testUser();
- 
-

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import bcrypt from "bcrypt";
 const userSchema=new mongoose.Schema({
     userName:{
         type:String,
@@ -24,9 +24,21 @@ const userSchema=new mongoose.Schema({
     role:{
         type:String,
         enum:['user','business','admin'],
-        default:"User"
+        default:'user'
     }
 
 },{timestamps:true});
 
-export const User=mongoose.model("User Schema",userSchema)
+//hashing password before saving to database
+userSchema.pre('save', async function () {
+  if (!this.isModified('password')) return;
+  this.password = await bcrypt.hash(this.password, 10);
+});
+
+//compare password for login
+
+userSchema.methods.comparePassword=async function(password){
+    return await bcrypt.compare(password,this.password);
+}
+
+export const User=mongoose.model('User', userSchema);

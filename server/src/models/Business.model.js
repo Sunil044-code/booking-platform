@@ -30,6 +30,13 @@ const businessSchema=new mongoose.Schema({
     type: String
   },
 
+  openingTime:{
+    type:String,
+  },
+  closingTime:{
+    type:String
+  },
+
   rating: {
     type: Number,
     default: 0
@@ -37,4 +44,4 @@ const businessSchema=new mongoose.Schema({
 
 }, { timestamps: true })
 
-export const Business=mongoose.model("Business Schema",businessSchema)
+export const Business = mongoose.model("Business", businessSchema)
